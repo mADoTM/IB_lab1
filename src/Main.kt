@@ -1,3 +1,7 @@
+
+import generator.LinearCongruentialGenerator
+import generator.LinearCongruentialGeneratorTest
+
 fun main() {
     val roundCount = 32
 
@@ -53,5 +57,19 @@ fun main() {
 
     println("Source text: $source")
     println("Decrypted text CFB: $decryptedCFB")
-}
 
+
+    val p = 11979 // prime number
+    val M = 430 // multiplier
+    val C = 1 // increment
+    val U0 = 10000 // initial value
+    val generator = LinearCongruentialGenerator(M, C, p)
+    val seq = generator.generateSequence(U0, 10_000)
+
+    val tester = LinearCongruentialGeneratorTest(generator)
+
+    tester.`should be near the real PI`()
+    tester.`coefficient of correlation should be greater than 0,75`()
+
+    println("end")
+}
