@@ -19,7 +19,37 @@ class RsaDecryptor(
 
         val d = e.modInverse(phi)
 
-        return encrypted.modPow(d, n)
+        val blocks = encrypted.splitToBlocks()
+
+        val result = blocks.map { it.modPow(d, n).toString() }
+
+        return BigInteger(
+            result.joinToString(
+                separator = ""
+            )
+        )
+    }
+
+    private fun BigInteger.splitToBlocks(): List<BigInteger> {
+        val result = mutableListOf<BigInteger>()
+
+        var reminder = this.toString()
+
+        val nLength = n.toString().length
+        while (reminder.isNotEmpty()) {
+            val potentialBigNumber = BigInteger(reminder.take(nLength))
+            val potentialSmallNumber = BigInteger(reminder.take(nLength - 1))
+
+            if (potentialBigNumber > n) {
+                result.add(potentialSmallNumber)
+                reminder = reminder.drop(nLength - 1)
+            } else {
+                result.add(potentialBigNumber)
+                reminder = reminder.drop(nLength)
+            }
+        }
+
+        return result
     }
 
     private fun findPrimeFactors(n: BigInteger): Pair<BigInteger, BigInteger>? {
