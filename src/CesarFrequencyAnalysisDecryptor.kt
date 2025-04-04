@@ -34,7 +34,8 @@ class CesarFrequencyAnalysisDecryptor(
     private fun String.toEncryptedFrequencyMap(): Map<Char, Double> {
         val textContainsOnlyLetters = this.lowercase(Locale.getDefault()).filter(Char::isLetter)
 
-        return textContainsOnlyLetters.groupBy { it }
+        return textContainsOnlyLetters
+            .groupBy { it }
             .map { it.key to it.value.count().toDouble() * 100 / textContainsOnlyLetters.length }
             .sortedByDescending { it.second }
             .toMap()
