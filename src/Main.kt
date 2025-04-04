@@ -1,4 +1,5 @@
 
+import java.io.File
 import java.math.BigInteger
 
 fun main() {
@@ -83,7 +84,30 @@ fun main() {
     )
 
     println(rsaDecryptor.decrypt())
+
+
+    val source = File("CesarSourceInput.txt").readText()
+    val frequencyMap = readFrequencyMap()
+
+    val decryptor = CesarFrequencyAnalysisDecryptor(
+        source,
+        frequencyMap
+    )
+
+    val decrypted = decryptor.execute()
+
+    File("CesarSourceOutput.txt").writeText(decrypted)
 }
+
+private fun readFrequencyMap() =
+    File("RussianFrequencyMap.txt")
+        .readLines()
+        .associate { raw ->
+            val details = raw.split("=")
+            val letter = details[0]
+            val frequency = details[1].toDouble()
+            letter.toCharArray()[0] to frequency
+        }
 
 // n = 889577666850907     e = 13971
 //ШТ = 403013074606912545180648978557219641194372024501606729868202878976557455422
